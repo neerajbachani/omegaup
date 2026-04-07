@@ -86,7 +86,6 @@
                 name="start-date"
                 :disabled="readOnly"
                 :min="update ? null : new Date()"
-                @input="validateDates"
               ></omegaup-datepicker
             ></label>
           </div>
@@ -116,14 +115,14 @@
                 :disabled="readOnly"
                 name="end-date"
                 :enabled="!unlimitedDuration"
-                :is-invalid="invalidParameterName === 'finish_time' || invalidDate"
-                @input="validateDates"
+                :is-invalid="
+                  invalidParameterName === 'finish_time' || invalidDate
+                "
               ></omegaup-datepicker
             ></label>
             <div
               v-if="invalidDate"
-              class="invalid-feedback"
-              style="display: block"
+              class="invalid-feedback invalid-date-feedback"
             >
               {{ T.courseAssignmentEndDateBeforeCourseStartDate }}
             </div>
@@ -406,7 +405,6 @@ export default class CourseDetails extends Vue {
   selectedLanguages = this.course.languages;
   levelOptions = levelOptions;
   MAX_LENGTH = MAX_LENGTH;
-  invalidDate = false;
 
   // Computed properties to track if required fields are complete
   get isNameComplete(): boolean {
@@ -563,25 +561,17 @@ export default class CourseDetails extends Vue {
     this.needsBasicInformation = this.course.needs_basic_information;
     this.requestsUserInformation = this.course.requests_user_information;
     this.unlimitedDuration = this.course.finish_time === null;
-    this.invalidDate = false;
   }
 
-  validateDates(): boolean {
-    if (
-      !this.unlimitedDuration &&
-      this.startTime !== null &&
-      this.finishTime !== null &&
-      this.finishTime <= this.startTime
-    ) {
-      this.invalidDate = true;
-      return false;
-    }
-    this.invalidDate = false;
-    return true;
+  get invalidDate(): boolean {
+    if (this.unlimitedDuration) return false;
+    if (!this.startTime || !this.finishTime) return false;
+    if (this.finishTime <= this.startTime) return true;
+    return false;
   }
 
   onSubmit(): void {
-    if (!this.validateDates()) {
+    if (this.invalidDate) {
       return;
     }
     if (!this.selectedLanguages || this.selectedLanguages.length === 0) {
@@ -647,5 +637,9 @@ export default class CourseDetails extends Vue {
   color: var(--form-character-counter-color, #6c757d);
   font-size: 0.8rem;
   margin-top: 0.25rem;
+}
+
+.invalid-date-feedback {
+  display: block;
 }
 </style>

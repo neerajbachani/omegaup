@@ -45,9 +45,7 @@ describe('VoerroTagsInput (omegaUp vendored) accent-insensitive typeahead', () =
     wrapper.vm.searchTag();
     await wrapper.vm.$nextTick();
 
-    expect(wrapper.vm.searchResults.map((t) => t.key)).toContain(
-      'division-ab',
-    );
+    expect(wrapper.vm.searchResults.map((t) => t.key)).toContain('division-ab');
   });
 
   it('strips HTML before matching so unaccented query hits accented title in label', async () => {

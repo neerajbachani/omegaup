@@ -40,6 +40,7 @@
           </span>
         </span>
         <button
+          v-if="!isDisabled"
           type="button"
           class="omegaup-typeahead-remove"
           @mousedown.prevent.stop="clearSelection"
@@ -150,6 +151,7 @@ export default class Typeahead extends Vue {
   }
 
   clearSelection(): void {
+    if (this.isDisabled) return;
     this.selectedOption = null;
     this.$emit('update:value', null);
   }

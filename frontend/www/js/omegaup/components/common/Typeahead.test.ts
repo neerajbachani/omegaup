@@ -86,6 +86,19 @@ describe('Typeahead.vue', () => {
     expect(wrapper.text()).not.toContain('División a/b');
   });
 
+  it('Should not offer a remove button while readonly', () => {
+    const wrapper = mount(common_Typeahead, {
+      propsData: {
+        existingOptions: [],
+        readonly: true,
+        value: { key: 'key', value: 'value' },
+      },
+    });
+
+    expect(wrapper.find('.omegaup-typeahead-remove').exists()).toBe(false);
+    expect(wrapper.find('.omegaup-typeahead-label').text()).toBe('value');
+  });
+
   it('Should call update:value with an empty tag', async () => {
     const wrapper = mount(common_Typeahead, {
       propsData: {
